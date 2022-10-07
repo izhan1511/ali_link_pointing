@@ -40,6 +40,5 @@ class PingController extends Controller
         } catch (\exception $e) {
         }
         PingIpJob::dispatch();
-
     }
 }
