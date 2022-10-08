@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\PingController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Http\Controllers\PingController;
 
 class PingIpJob implements ShouldQueue
 {
@@ -18,9 +18,13 @@ class PingIpJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    public $first, $second, $third, $fourth;
+    public function __construct($first, $second, $third, $fourth)
     {
-        //
+        $this->first = $first;
+        $this->second = $second;
+        $this->third = $third;
+        $this->fourth = $fourth;
     }
 
     /**
@@ -31,6 +35,6 @@ class PingIpJob implements ShouldQueue
     public function handle()
     {
         $pingController = new PingController();
-        $pingController->pingIp();
+        $pingController->pingIp($this->first, $this->second, $this->third, $this->fourth);
     }
 }

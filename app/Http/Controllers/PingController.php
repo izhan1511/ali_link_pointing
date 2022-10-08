@@ -7,12 +7,33 @@ use App\Jobs\PingIpJob;
 
 class PingController extends Controller
 {
-    public function pingIp()
+    public function pingIp($first = 1, $sec = 1, $third = 1, $fourth = 0)
     {
-        $first = rand(0, 255);
-        $sec = rand(0, 255);
-        $third = rand(0, 255);
-        $fourth = rand(0, 255);
+        if ($fourth == 255) {
+            $fourth = 0;
+            if ($third == 255) {
+                $third = 0;
+                if ($sec == 255) {
+                    $sec = 0;
+                    if ($first == 255) {
+                        $first = 0;
+                    } else {
+                        $first = $first + 1;
+                    }
+                } else {
+                    $sec = $sec + 1;
+                }
+            } else {
+                $third = $third + 1;
+            }
+        } else {
+            $fourth = $fourth + 1;
+        }
+        // \Log::error('First: ' . $first);
+        // \Log::error('Sec: ' . $sec);
+        // \Log::error('third: ' . $third);
+        // \Log::error('fourth: ' . $fourth);
+        sleep(10);
         $ip = $first . '.' . $sec . '.' . $third . '.' . $fourth;
         try {
             // $ip = '1.1.1.1';
@@ -39,6 +60,6 @@ class PingController extends Controller
             \Log::error('IP: ' . $ip);
             \Log::error('data: ' . json_encode($e->getMessage()));
         }
-        PingIpJob::dispatch();
+        PingIpJob::dispatch($first, $sec, $third, $fourth);
     }
 }
