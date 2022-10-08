@@ -33,7 +33,6 @@ class PingController extends Controller
         // \Log::error('Sec: ' . $sec);
         // \Log::error('third: ' . $third);
         // \Log::error('fourth: ' . $fourth);
-        sleep(10);
         $ip = $first . '.' . $sec . '.' . $third . '.' . $fourth;
         try {
             // $ip = '1.1.1.1';
