@@ -31,8 +31,8 @@ class PingController extends Controller
                     ]);
                 }
             } else {
-                // \Log::error('IP: ' . $ip);
-                // \Log::error('data: ' . json_encode($data));
+                \Log::error('IP: ' . $ip);
+                \Log::error('data: ' . json_encode($data));
             }
 
         } catch (\exception $e) {
