@@ -9,6 +9,7 @@ class PingController extends Controller
 {
     public function pingIp($first = 1, $sec = 1, $third = 1, $fourth = 0)
     {
+        $stop = 0;
         if ($fourth == 255) {
             $fourth = 0;
             if ($third == 255) {
@@ -16,7 +17,7 @@ class PingController extends Controller
                 if ($sec == 255) {
                     $sec = 0;
                     if ($first == 255) {
-                        $first = 0;
+                        $stop = 1;
                     } else {
                         $first = $first + 1;
                     }
@@ -34,31 +35,36 @@ class PingController extends Controller
         // \Log::error('third: ' . $third);
         // \Log::error('fourth: ' . $fourth);
         $ip = $first . '.' . $sec . '.' . $third . '.' . $fourth;
-        try {
-            // $ip = '1.1.1.1';
-            $ch = curl_init($ip);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $data = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            if ($data !== false) {
-                $check = ip::where('ip', $ip)->first();
-                if (!$check) {
-                    $ip = ip::create([
-                        'ip' => $ip,
-                    ]);
+        if ($stop === 0) {
+            try {
+                // $ip = '1.1.1.1';
+                $ch = curl_init($ip);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $data = curl_exec($ch);
+                $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                if ($data !== false) {
+                    $check = ip::where('ip', $ip)->first();
+                    if (!$check) {
+                        $ip = ip::create([
+                            'ip' => $ip,
+                        ]);
+                    }
+                } else {
+                    \Log::error('IP: ' . $ip);
+                    \Log::error('data: ' . json_encode($data));
                 }
-            } else {
-                \Log::error('IP: ' . $ip);
-                \Log::error('data: ' . json_encode($data));
-            }
 
-        } catch (\exception $e) {
-            \Log::error('IP: ' . $ip);
-            \Log::error('data: ' . json_encode($e->getMessage()));
+            } catch (\exception $e) {
+                \Log::error('IP: ' . $ip);
+                \Log::error('data: ' . json_encode($e->getMessage()));
+            }
+            PingIpJob::dispatch($first, $sec, $third, $fourth);
+        } else {
+            \Log::error('All Serries are completed');
+
         }
-        PingIpJob::dispatch($first, $sec, $third, $fourth);
     }
 }
