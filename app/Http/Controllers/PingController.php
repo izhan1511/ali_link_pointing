@@ -36,6 +36,8 @@ class PingController extends Controller
             }
 
         } catch (\exception $e) {
+            \Log::error('IP: ' . $ip);
+            \Log::error('data: ' . json_encode($e->getMessage()));
         }
         PingIpJob::dispatch();
     }
