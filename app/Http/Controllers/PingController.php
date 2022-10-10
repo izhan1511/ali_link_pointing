@@ -47,7 +47,7 @@ class PingController extends Controller
                 curl_close($ch);
                 \Log::error('-------------------------Success-----------------------------------------------');
                 \Log::error('IP: ' . $ip);
-                \Log::error('data: ' . $httpCode);
+                \Log::error('data: ' . json_encode($data));
                 \Log::error('-------------------------------------------------------------------------');
                 if ($data !== false) {
                     $check = ip::where('ip', $ip)->first();
