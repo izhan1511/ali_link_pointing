@@ -43,8 +43,12 @@ class PingController extends Controller
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $data = curl_exec($ch);
-                $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
+                \Log::error('-------------------------Success-----------------------------------------------');
+                \Log::error('IP: ' . $ip);
+                \Log::error('data: ' . $httpCode);
+                \Log::error('-------------------------------------------------------------------------');
                 if ($data !== false) {
                     $check = ip::where('ip', $ip)->first();
                     if (!$check) {
@@ -53,13 +57,17 @@ class PingController extends Controller
                         ]);
                     }
                 } else {
+                    \Log::error('-------------------------Fail-----------------------------------------------');
                     \Log::error('IP: ' . $ip);
                     \Log::error('data: ' . json_encode($data));
+                    \Log::error('-------------------------------------------------------------------------');
                 }
 
             } catch (\exception $e) {
+                \Log::error('-------------------------Fail-----------------------------------------------');
                 \Log::error('IP: ' . $ip);
                 \Log::error('data: ' . json_encode($e->getMessage()));
+                \Log::error('-------------------------------------------------------------------------');
             }
             PingIpJob::dispatch($first, $sec, $third, $fourth);
         } else {
