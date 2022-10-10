@@ -45,11 +45,11 @@ class PingController extends Controller
                 $data = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
-                \Log::error('-------------------------Success-----------------------------------------------');
-                \Log::error('IP: ' . $ip);
-                \Log::error('data: ' . json_encode($data));
-                \Log::error('-------------------------------------------------------------------------');
                 if ($data !== false) {
+                    \Log::error('-------------------------Success-----------------------------------------------');
+                    \Log::error('IP: ' . $ip);
+                    \Log::error('data: ' . json_encode($data));
+                    \Log::error('-------------------------------------------------------------------------');
                     $check = ip::where('ip', $ip)->first();
                     if (!$check) {
                         $ip = ip::create([
